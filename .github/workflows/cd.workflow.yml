@@ -55,6 +55,8 @@ jobs:
           fi
 
       - name: Create new tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           new_tag=${{ env.NEW_TAG }}
           echo "Creating new tag: $new_tag"
