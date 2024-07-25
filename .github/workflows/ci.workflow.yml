@@ -68,6 +68,7 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install
+
       - name: Run linter
         run: |
           pnpm lint 2>&1 | tee lint.log
@@ -104,6 +105,9 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install
 
       - name: Build project
         run: pnpm build
