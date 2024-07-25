@@ -16,6 +16,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: "Get Previous tag"
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: v1.0.0
+
       - name: Get the latest tag
         id: get-latest-tag
         run: |
@@ -26,7 +32,7 @@ jobs:
       - name: Determine next version
         id: next-version
         run: |
-          latest_tag=${{ env.LATEST_TAG }}
+          latest_tag=${{steps.previoustag.outputs.tag}}
           echo "Latest tag: $latest_tag"
 
           if [[ $latest_tag =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
