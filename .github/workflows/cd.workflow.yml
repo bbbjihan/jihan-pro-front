@@ -1,0 +1,95 @@
+name: Deploy Next.js to S3 and invalidate CloudFront
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get the latest tag
+        id: get-latest-tag
+        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+
+      - name: Determine next version
+        id: next-version
+        run: |
+          latest_tag=${{ steps.get-latest-tag.outputs.tag }}
+          echo "Latest tag: $latest_tag"
+
+          if [[ $latest_tag =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            major=${BASH_REMATCH[1]}
+            minor=${BASH_REMATCH[2]}
+            patch=${BASH_REMATCH[3]}
+            
+            base_branch="${{ github.event.pull_request.base.ref }}"
+            source_branch="${{ github.event.pull_request.head.ref }}"
+            
+            if [[ $source_branch == "dev" ]]; then
+              major=$((major + 1))
+              minor=0
+              patch=0
+            elif [[ $source_branch == "hotfix" ]]; then
+              patch=$((patch + 1))
+            else
+              echo "Unknown source branch: $source_branch"
+              exit 1
+            fi
+
+            new_tag="v${major}.${minor}.${patch}"
+            echo "New tag: $new_tag"
+            echo "::set-output name=tag::$new_tag"
+          else
+            echo "No valid latest tag found. Exiting."
+            exit 1
+          fi
+
+      - name: Create new tag
+        run: |
+          new_tag=${{ steps.next-version.outputs.tag }}
+          echo "Creating new tag: $new_tag"
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git tag $new_tag
+          git push origin $new_tag
+
+      - name: pnpm package manager setup
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: node v20.x setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync out/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
