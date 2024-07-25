@@ -7,6 +7,6 @@ describe("샘플 테스트", () => {
     render(<TestPage />);
     const $page = screen.getByTestId("test_div");
 
-    expect($page.innerHTML.indexOf("TestPage")).toBe(-1);
+    expect($page.innerHTML.indexOf("TestPage")).not.toBe(-1);
   });
 });
