@@ -42,13 +42,15 @@ jobs:
             
             source_branch="${{ github.event.pull_request.head.ref }}"
             
-            if [[ $source_branch == "dev" ]]; then
+            echo "Source branch: $source_branch"
+            
+            if [[ $source_branch == dev* ]]; then
               minor=$((minor + 1))
               patch=0
-            elif [[ $source_branch == "hotfix" ]]; then
+            elif [[ $source_branch == hotfix* ]]; then
               patch=$((patch + 1))
             else
-              echo "Unknown source branch: $source_branch"
+              echo "Unknown source branch prefix: $source_branch"
               exit 1
             fi
 
@@ -56,7 +58,7 @@ jobs:
             echo "New tag: $new_tag"
             echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
           else
-            echo "No valid latest tag found. Exiting."
+            echo "No valid previous tag found. Exiting."
             exit 1
           fi
 
