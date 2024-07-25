@@ -8,9 +8,6 @@ on:
       - opened
       - synchronize
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -40,20 +37,3 @@ jobs:
 
       - name: Build project
         run: pnpm build
-
-      - name: Merge PR
-        if: success()
-        uses: actions/github-script@v6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          script: |
-            const { context, github } = require('@actions/github');
-            const pr = context.payload.pull_request;
-
-            await github.pulls.merge({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: pr.number,
-              merge_method: 'merge',
-            });
