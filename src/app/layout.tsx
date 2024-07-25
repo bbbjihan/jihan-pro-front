@@ -7,6 +7,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "jihan.pro",
   description: "Frontend Jihan",
+  icons: {
+    icon: "/images/jh_black.png",
+  },
 };
 
 export default function RootLayout({
