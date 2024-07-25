@@ -1,8 +1,8 @@
-# [Jihan.pro](http://jihan.pro/)
+# Park Jihan Web Page
 
-- 호스팅 URL: http://jihan.pro
-- S3 버킷 웹사이트 엔드포인트: [http://jihan.pro.s3-website.ap-northeast-2.amazonaws.com](http://jihan.pro.s3-website.ap-northeast-2.amazonaws.com/)
-- CloudFrount 배포 도메인 이름: [https://d1tjpm0obmh97d.cloudfront.net](https://d1tjpm0obmh97d.cloudfront.net/)
+- [호스팅 URL: https://jihan.pro/](https://jihan.pro/)
+- [S3 버킷 웹사이트 엔드포인트](http://jihan.pro.s3-website.ap-northeast-2.amazonaws.com)
+- [CloudFrount 배포 도메인 이름](https://ddacqh4evk5n1.cloudfront.net)
 
 ## 개발환경
 
@@ -134,23 +134,23 @@ sequenceDiagram
 
 ### 사용자 요청 처리
 
-사용자가 웹사이트에 접속할 때, CloudFront는 캐시된 파일을 제공하거나 S3에서 파일을 요청하여 반환합니다.
+사용자가 웹사이트에 접속할 때, `CloudFront는` 캐시된 파일을 제공하거나 `S3`에서 파일을 요청하여 반환합니다.
 
-1. **사용자 -> Route 53**: 사용자가 브라우저에서 `jihan.pro` 도메인으로 요청을 보냅니다.
-2. **Route 53 -> CloudFront**: Amazon Route 53은 `jihan.pro` 도메인의 DNS 요청을 받아서 해당 요청을 Amazon CloudFront로 전달합니다.
-3. **CloudFront 캐시 확인**
-    - CloudFront에 요청된 파일이 캐시되어 있는 경우, CloudFront는 캐시된 정적 파일을 사용자에게 반환합니다.
-    - CloudFront에 요청된 파일이 캐시되어 있지 않은 경우, CloudFront는 Amazon S3 버킷에 정적 파일을 요청합니다.
-        - **S3 -> CloudFront**: S3는 요청된 정적 파일을 CloudFront로 반환합니다. 이때 CloudFront는 해당 파일을 캐시에 저장합니다.
-4. **CloudFront -> 사용자**: CloudFront가 정적 파일을 사용자에게 반환합니다.
+1. **`사용자` -> `Route 53`**: 사용자가 브라우저에서 `jihan.pro` 도메인으로 요청을 보냅니다.
+2. **`Route 53` -> `CloudFront`**: `Route 53`은 `jihan.pro` 도메인의 DNS 요청을 받아서 해당 요청을 `CloudFront로` 전달합니다.
+3. **`CloudFront` 캐시 확인**
+    - `CloudFront`에 요청된 파일이 캐시되어 있는 경우, `CloudFront`는 캐시된 정적 파일을 사용자에게 반환합니다.
+    - `CloudFront`에 요청된 파일이 캐시되어 있지 않은 경우, `CloudFront`는 `S3` 버킷에 정적 파일을 요청합니다.
+        - **`S3` -> `CloudFront`**: `S3`는 요청된 정적 파일을 `CloudFront`로 반환합니다. 이때 `CloudFront`는 해당 파일을 캐시에 저장합니다.
+4. **`CloudFront` -> `사용자`**: `CloudFront`가 정적 파일을 사용자에게 반환합니다.
 
 ### 코드 병합 및 배포
 
-개발자가 코드 변경을 푸시하면, GitHub Actions가 빌드를 실행하고, 빌드 산출물을 S3에 업로드하여 새로운 버전을 배포합니다.
+개발자가 코드 변경을 푸시하면, `GitHub Actions`가 빌드를 실행하고, 빌드 산출물을 `S3`에 업로드하여 새로운 버전을 배포합니다.
 
-1. **GitRepository -> GitHubActions**: 개발자가 Git Repository에 Pull Request (PR)를 main에 머지하면 Github Actions의 CD Workflow가 트리거됩니다.
-2. **GitHubActions -> GitRepository**: GitHub Actions는 CD 파이프라인을 실행하고, 빌드를 시작합니다.
-3. **GitRepository -> S3**: 빌드가 완료되면 GitHub Actions는 빌드 산출물을 Amazon S3 버킷에 업로드합니다.
+1. **`GitRepository` -> `GitHubActions`**: 개발자가 `GitRepository`에 `Pull Request (PR)`를 `main`에 머지하면 `Github Actions`의 `CD Workflow`가 트리거됩니다.
+2. **`GitHubActions` -> `GitRepository`**: `GitHub Actions`는 `CD 파이프라인`을 실행하고, 빌드를 시작합니다.
+3. **`GitRepository` -> `S3`**: 빌드가 완료되면 `GitHub Actions`는 빌드 산출물을 `S3` 버킷에 업로드합니다.
 
 ## 브랜치 관리 전략
 
@@ -245,6 +245,8 @@ gitGraph
 
 ### AWS CloudFront와 CDN
 
+- **CDN**:
+    - CDN은 콘텐츠 전달 네트워크로, 웹 콘텐츠를 사용자에게 빠르고 신뢰성 있게 전달하기 위한 분산 서버 시스템입니다.
 - **AWS CloudFront**:
     - CloudFront는 AWS의 콘텐츠 전송 네트워크(CDN) 서비스로, 정적 및 동적 웹 콘텐츠를 전 세계 사용자에게 빠르고 안전하게 배포할 수 있게 합니다.
     - 사용자의 요청을 지리적으로 가장 가까운 엣지 로케이션으로 라우팅하여 웹사이트 로딩 속도를 개선하고, 서버의 부하를 줄이는 역할을 합니다.
@@ -258,10 +260,11 @@ gitGraph
 
 ### AWS Route 53과 DNS
 
+- **DNS**:
+    - DNS란 도메인 네임 시스템으로, 사람이 읽을 수 있는 도메인 이름을 컴퓨터가 인식할 수 있는 IP 주소로 변환하는 시스템입니다.
 - **AWS Route 53**:
     - Route 53은 AWS의 DNS(도메인 네임 시스템) 웹 서비스로, 도메인 이름을 IP 주소로 변환하여 인터넷의 다양한 서비스에 접근할 수 있도록 합니다.
     - Route 53은 도메인 등록, DNS 라우팅, 트래픽 관리 기능을 제공합니다. 이를 통해 도메인 이름의 구입, 관리, DNS 레코드 설정 등을 쉽게 할 수 있습니다.
-    - **DNS 레코드**: 도메인 이름을 특정 IP 주소, AWS 서비스, 다른 도메인 등으로 매핑하는 정보를 포함합니다. 예를 들어, `A` 레코드는 도메인 이름을 IP 주소로 매핑하고, `CNAME` 레코드는 도메인 이름을 다른 도메인 이름으로 매핑합니다.
 
 ### Repository Secret과 환경변수
 
@@ -272,30 +275,44 @@ gitGraph
     - GitHub Actions에서는 `env` 키워드를 사용하여 환경변수를 설정하고 사용할 수 있습니다. 워크플로우 내에서 원하는 스코프에 따라 env를 관리할 수 있습니다.
 
 
-## 아래는 레포지토리 구성 중에 있었던 로그 아카이브입니다.
+## Archives
 
-###  정적 파일 라우팅 시에 pathname에 .html이 포함되어야 하는 문제
+### Trouble Shooting
+- `AWS Certification Manager`를 활용한 `CloudFront` `SSL` 인증서 셋팅
+  - `https` 프로토콜 호출을 위해 `CloudFront`에 ACM을 활용한 `SSL` 인증서를 셋팅해줌.
+  - 본 과정에서 `Route53` -> `S3`로 연결이 되어있어 jihan.pro에 접근 시 `CloudFront`가 아닌 `S3`에 접근하고 있었다는 것을 알았음.
+  - `Route53` -> `CloudFront`로 A 타입 레코드의 origin을 변경하여 jihan.pro 접근시 `CloudFront`로 포워딩해줌. `CloudFront`에는 SSL 셋팅이 완료된 상태였으므로 jihan.pro 도메인에 https로 접근 가능.
 
-app router환경에서 app/testpage로 작성한 테스트페이지가 dev 환경에서는 /testpage로 접속했을 때 확인 가능한데, 정적 파일 배포한 환경에서는 /testpage로 접속이 불가하고, /testpage.html로 접속해야 확인이 가능한 문제
+- [미해결]정적 파일 라우팅 시에 pathname에 .html이 포함되어야 하는 문제
+  - app router환경에서 `app/testpage`로 작성한 테스트페이지가 dev 환경에서는 `/testpage`로 접속했을 때 확인 가능한데, 정적 파일 배포한 환경에서는 `/testpage`로 접속이 불가하고, `/testpage.html`로 접속해야 확인이 가능한 문제
+  - https://mingule.tistory.com/76 를 참고해서, `AWS Lambda`를 세팅하여 해결하려 하였으나, `Lambda`의 호출이 제대로 이루어지지 않고, `CloudFront` 동작에 문제가 있어서 롤백. 실제로 개발에 착수하기 전에 제대로 설정해야할 것으로 보임.
 
-https://2ham-s.tistory.com/408
+- PR 생성 시에 자동으로 머지해야 할까?
+  - PR을 자동으로 머지하게 되면 CI 워크플로우에서 `fail`이 발생하는 경우 외에는 PR에 대한 검증 없이 배포 단계까지 이르게 됨.
+  - `CI(PR -> 리뷰)` -> `CD(머지 -> 배포)`의 모양으로 파이프라인을 둘로 나누고, 그 중간에는 휴먼 체크가 필요한 구조가 좋다고 생각하여 자동 머지는 제외하고 구축함.
 
-### PR 생성 시에 자동으로 머지해야 할까?
+- 배포 이전에 Next 레포지토리에 존재해야 하는 `.env`를 어떻게 git ignore한 채로 import할 수 있을까?
+  - `next build` 스크립트가 실행되기 전에 프로덕션 환경에서 필요한 Next 프로젝트 환경변수가 `.env` 형식으로 루트 디렉토리 내에 있어야 함.
+  - 일반적으로 `.gitignore`로 `.env`를 깃에 올리지 않은 상태이며, 빌드는 Github Actions의 인스턴스 환경에서 원격 저장소를 `fetch`하여 실행되는 형태이기 때문에 위에서 말한 `.env`가 루트 디렉토리에 포함될 수 없음.
+  - 본 프로젝트에서는 아직 환경 변수로 분류된 값이 없기 때문에 이를 해결하기 위한 구현은 하지 않았으나, 다음과 같은 형태로 해결 방법을 구상해보았음.
+    - Next 빌드를 위한 환경변수들을 모두 `repository secrets`로 추가해줌
+    - `cd workflow`에서 `next build` 스크립트를 `run`하기 전에 `repository secrets`를 모두 불러와 `touch .env && echo ${ env.NEXT_PUBLIC_ ... } >> .env`와 같은 스크립트로 임시 `.env`파일 직접 생성
+    - 이후에 빌드
 
-### main 머지 시에 최근 태그 불러와서 새 태그 생성 후 Release하도록 워크플로우 작성
+- `main` 머지 시에 최근 태그 불러와서 새 태그 생성 후 `Release`하도록 `CD` 워크플로우 작성(`.github/workflows/cd.workflow.yml`)
+  - `WyriHaximus/github-action-get-previous-tag@v1`라는 배포되어 있는 액션 스크립트를 불러와서 작성함.
+  - 위의 스크립트를 통해 가장 최근의 태그명을 불러오고, `regex를` 통해 `major`, `minor`, `patch` 버전 값을 파싱하고 수정한 뒤에 이를 `env`로 등록.
+  - 다음 `step에서` 이를 활용하여 태그를 생성하고 `Release하도록` 작성.
 
-## TODO
-
+### TODO
 - [x]  브랜치 관리 전략 설계
 - [x]  브랜치 관리 전략에 맞게 ci 워크플로우 스크립트 작성
-- [ ]  브랜치 관리 전략에 맞게 cd 워크플로우 스크립트 수정
+- [x]  브랜치 관리 전략에 맞게 cd 워크플로우 스크립트 수정
     - [x]  AWS 자격 증명 구성(IAM)
-    - [ ]  next app 환경변수 분리 및 설정
-- [ ]  배포 환경 설정
+- [x]  배포 환경 설정
     - [x]  AWS S3 버킷 설정
     - [x]  AWS CloudFront 설정
     - [x]  AWS Route53 설정
-    - [ ]  라우트 파서 설정(AWS Lambda)
 - [x]  주요 패키지 설치 및 설정
 - [x]  프로젝트 디렉토리 구조 설정
 - [x]  README 문서 작성
